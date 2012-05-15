@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2
+END
+format.h
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/format.h
+END
+load_store_suite.c
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/load_store_suite.c
+END
+test1.dat
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/test1.dat
+END
+load_store_test
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/load_store_test
+END
+test2.dat
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/test2.dat
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/Makefile
+END
+load_store_suite.h
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/load_store_suite.h
+END
+load_store_test.c
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/Test2/load_store_test.c
+END

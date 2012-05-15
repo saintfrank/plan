@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test
+END
+README.testing
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/README.testing
+END
+README.validation
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/README.validation
+END
+cunit.c
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Test/cunit.c
+END

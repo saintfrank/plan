@@ -1,0 +1,67 @@
+=========================================================================
+ISTRUZIONI per la realizzazione della libreria libdplan.a
+========================================================================
+
+Il progetto prevede la realizzazione di una libreria di funzioni (libdplan.a)
+utilizzata da client e server per operare sugli eventi e sulle agende.
+
+Le funzioni da realizzare sono specificate nei file
+
+lbase.h 
+llist.h
+
+Tali file contengono i prototipi delle funzioni da
+realizzare, i tipi di dato e le define realtive.
+
+E' possibile generare la documentazione doxygen per questi file invocando
+
+  bash:~$ make docu
+
+dopo l'esecuzione visualizzare 
+../Doc/html/index.html con un qualsiasi browser.
+
+I test per verificare il funzionamento di libdplan.c utilizzano la libreria
+cunit e si trovano nella directory
+
+../Test/
+
+Prima di utilizzare i programmi di test contenuti nelle varie sottodirectory
+leggere ATTENTAMENTE il file Test/README.testing ed a provare ad
+eseguire il file Test/cunit.c
+
+I test assumono che la libreria sia stata compilata e copiata nella directory
+
+lib/
+
+I test possono essere invocati o com "make test" nelle rispettive directory
+o con "make testiniziale" nella directory Src (questa dir) 
+-----------------
+Come procedere :
+-----------------
+
+0) leggere attentamente questo README e la specifica delle funzioni di
+   libreria e del progetto complessivo
+
+1) realizzare le funzioni specificate testandole adeguatamente.
+
+2) esaminare  programmi di test automatico nella directory Test. Prima di
+   effettuare i test leggere ATTENTAMENTE il file
+   Test/README.testing e provare ad eseguire il file Test/cunit.c 
+   I test assumono che la libreria sia stata compilata e copiata nella directory
+
+   lib/
+
+3) effettuare il test complessivo usando
+
+       bash:~$ make testiniziale
+
+  NOTA: (1) tutti i file .c ed .h sviluppati per la soluzione si devono 
+  trovare nella directory Src/
+  (2) E' importante che il test venga effettuato solo su
+  codice ragionevolmente corretto altrimenti i risultati possono essere di
+  difficile interpretazione, fuorvianti o inutili.
+
+4) quando la libreria e' stabile, 
+   procedere allo sviluppo del resto del progetto e alla consegna
+   complessiva secondo le istruzioni in README.3
+

@@ -1,0 +1,131 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src
+END
+testparse
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/testparse
+END
+dplan.c
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/dplan.c
+END
+outfunz.check
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/outfunz.check
+END
+llist.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/llist.h
+END
+bench.c
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/bench.c
+END
+dserver
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/dserver
+END
+README.libdplan
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/README.libdplan
+END
+errparse.check
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/errparse.check
+END
+Makefile
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/Makefile
+END
+provalist.c
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/provalist.c
+END
+dplan
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/dplan
+END
+testfunz
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/testfunz
+END
+README.clientserver
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/README.clientserver
+END
+testpar
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/testpar
+END
+lbase.c
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/lbase.c
+END
+lbase.h
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/lbase.h
+END
+lcscom.c
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/lcscom.c
+END
+libdplan.a
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/libdplan.a
+END
+dserver.c
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/dserver.c
+END
+lcscom.h
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/lcscom.h
+END
+llist.c
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/francescocrv_dplan/!svn/ver/3/DPLANJUNE2009/Src/llist.c
+END

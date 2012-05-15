@@ -1,0 +1,197 @@
+=========================================================================
+ISTRUZIONI per la realizzazione di dplan
+========================================================================
+
+La directory Src/ comprende i seguenti file/directory
+
+-----------------------------------------------
+Descrizione dei file contenuti nella directory
+-----------------------------------------------
+
+README-3		: questo file
+
+
+gruppo-check.pl		: uno script Perl che controlla il formato del file
+			  gruppo.txt prima di effettuare la consegna
+			  (NON MODIFICARE -- uguale al primo frammento)
+
+gruppo.txt		: un file di esempio di specifica del gruppo
+			  (uguale al primo frammento)
+			  (solo 1 studente per gruppo)
+			  (deve essere aggiornato con i dati di chi consegna,
+			  secondo il formato esemplificato)
+
+lbase.h,llist.h		: File di include con i tipi base e la lista
+                          concatenata che rappresenta gli eventi di una
+                          singola agenda ed i prototipi delle funzioni da
+                          implementare e che operano su tali tipi
+			  (vedi README.libdplan)
+			 (NON MODIFICARE -- se non nella parte commenti)
+
+lcscom.h		 : File di include con i tipi base utilizzati per le
+			 comunicazioni su socket ed i prototipi delle funzioni
+			 da implementare e che operano su tali tipi
+			 (NON MODIFICARE -- se non nella parte commenti)
+
+Makefile		  : Makefile per il server (dserver) ed il client
+			    (dplan) contiene i target per effettuare i test
+			    automatici della parte sequenziale e concorrente e
+			    il make per effetuare la consegna
+			    (MODIFICARE NELLE PARTI RICHIESTE)
+
+testparse,testfunz,testpar   : script per i test su server e client
+			    (NON MODIFICARE)
+
+errparse.check		: output (su stderr) atteso dal test "testparse"
+			(NON MODIFICARE)
+
+outfunz.check		: output atteso dal test "testfunz"
+			(NON MODIFICARE)
+
+DATA/out*.check           : vari file di output attesi per il test "testpar"
+			   (NON MODIFICARE)
+
+DATA/*.dat		  : agende utilizzate nei test automatici
+			   (NON MODIFICARE)
+
+tmp/			   : directory che contiene i socket
+
+tmp2/			   : directory delle agende per i test automatici
+
+OUT/			   : directory di output per i test automatici (test3)
+
+----------------------------
+Cosa deve essere realizzato 
+----------------------------
+
+Il progetto prevede la realizzazione di un programma server e di un programma
+client come specificato in dplan0708.pdf.
+
+E' richiesto inoltre di realizzare un insieme di funzioni di comunicazione che
+operano su socket. lcscom.h contiene le specifiche delle funzioni da
+realizzare, i tipi di dato e le define realtive.
+
+E' possibile generare la documentazione doxygen per le funzioni in lcscom.h
+invocando 
+
+  bash:~$ make docu
+
+dopo l'esecuzione visualizzare ../Doc/html/index.html con un qualsiasi browser.
+
+Il makefile deve essere aggiornato durante la
+realizazzione in modo da compilare correttamente i file prodotti e da
+effettuare la consegna di tutti i file sorgenti (*.c e *.h).
+
+Per testare il funzionamento di server e client sono forniti tre script di
+test.
+
+Il primo "testparse" testa semplicemente il parsing degli argomenti da parte
+del client. Puo' essere utilizzato senza implementare il server. L' output
+atteso e' registrato in "errparse.check".
+Puo' essere invocato con "make test1"
+
+Il secondo "testfunz" testa le interazioni fra server e client relativamente
+alle varie operazioni che possono essere richieste. Per ogni operazione c'e'
+solo un thread attivo e quindi non vengono testate le interazioni fra i vari
+thread.  L' output atteso e' registrato in "outfunz.check".
+Puo' essere invocato con "make test2"
+
+Infine, il test "testpar" testa l'operato di piu' client e server attivi
+contemporaneamente. Piu' operazioni sono invocate assieme. Lo script so occupa
+anche di salvare i risultati delle singole operazioni nella directory OUT/ e
+confrontarle con gli output attesi (registrati nella directory DATA/).
+Puo' essere invocato con "make test3"
+
+Complessivamente e possobile eseguire tutti i test (relativi a libdplan.a, al
+client ed al server) con "make testfinale"
+
+------------------
+Come procedere :
+-----------------
+
+0) leggere attentamente questo README e la specifica 
+
+1) realizzare la libreria libdplan.a seguendo le istruzioni nella
+   directory README.libdplan e testarla adeguatamente. 
+
+2) implementare la libreria di comunicazione lcscom secondo le specifiche
+   nella documentazione e testarne il funzionamento
+
+3) analizzare accuratamente gli script di test e gli output attesi e
+  implementare il client ed il server in modo incrementale testando
+  adeguatamente il loro funzionamento. Per come sono strutturati i test
+  conviene passare al test successivo solo quando il precedente viene eseguto
+  correttamente. 
+
+6)  testare usando
+
+       bash:~$ make test1
+       bash:~$ make test2
+       bash:~$ make test3
+       bash:~$ make testfinale
+
+  NOTA: (1) tutti i file .c e .h sviluppati per la soluzione 
+  si devono trovare nella directory Src/ 
+   (2) E' importante che il test venga effettuato solo su
+  codice ragionevolmente corretto altrimenti i risultati possono essere di
+  difficile interpretazione, fuorvianti o inutili.
+  
+7) preparare la documentazione: ovvero 
+   7.1) commentare adeguatamente i file aggiungendo la dichiarazione di
+   originalita',  
+
+   /** \file  ...
+       \author Nino Bixio
+     Si dichiara che il contenuto di questo file e' in ogni sua parte opera
+     originale dell' autore.  */
+
+   7.2) scrivere la relazione PDF come richiesto dalle specifiche
+
+8) consegnare il file ESCLUSIVAMENTE eseguendo
+
+      bash:~$ make consegna
+
+   e seguendo le istruzioni. 
+
+   Per la consegna e' necessaria l'utility "mpack" installata solo nelle
+   macchine dei laboratori H, M ed I. Per consegne da altre macchine e'
+   possibile scaricare il binario di 'mpack' dal sito del corso (attenzione:
+   richiede che il mailer sia configurato correttamente.)
+
+
+---------------------------------------
+ NOTE IMPORTANTI: LEGGERE ATTENTAMENTE
+---------------------------------------
+
+1) gli eleborati non consegnati con "make consegna" non verranno accettati
+
+2) tutti gli elaborati verranno confrontati fra di loro con tool automatici
+   per stabilire eventali situazioni di PLAGIO. Se tali situazioni si
+   verificheranno *tutti* gli elaborato coinvolti verranno annullati con
+   conseguente perdita del bonus. 
+
+3) Tutti gli studenti coinvolti in un episodio di PLAGIO comprovato dovranno
+   re-implementare il frammento incriminato e saranno sottoposti ad una prova
+   orale supplementare. In caso di recidive verranno esclusi dalla
+   possibilita' di sostenere l'esame per TUTTO IL RESTO DELL'ANNO ACCADEMICO
+   IN CORSO.
+
+4) Chi in sede di orale risulta palesemente non essere l'autore del software
+   consegnato in uno dei frammenti verra' escluso dalla possibilita' di
+   sostenere l'esame per TUTTO IL RESTO DELL'ANNO ACCADEMICO IN CORSO.
+
+5) Tutti i comportamenti scorretti ai punti 3 e 4 verranno segnalati
+   ufficialmente al presidente del corso di laurea, che si riserva di
+   decidere azioni disciplinari supplementari a quelle sopra descritte.
+
+----------------------------
+ VALUTAZIONE 
+----------------------------
+
+Gli studenti che consegnano una versione funzionante e ragionevolmente
+corretta del progetto entro la data di scadenza accumulano un bonus di 2
+punti che verra' sommato al voto finale (vedi lucidi lezioni ed
+esercitazioni).
+
+Le modalita' di valutazione del progetto finale sono dettagliate nelle
+specifiche. 

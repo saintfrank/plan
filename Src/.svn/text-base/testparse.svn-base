@@ -1,0 +1,49 @@
+#!/bin/sh
+
+
+if ./dplan -g gigi ; then
+    return 1
+fi
+
+if ./dplan -u gigi ; then
+    return 1
+fi
+
+if ./dplan agenda -d 15-10-2003 -u gigi ; then
+    exit 1
+fi
+
+if ./dplan agenda -d 10-2003 -u gigi#hhhhh ; then
+    exit 1
+fi
+
+if ./dplan agenda -d 10-10-2003 -u gigioooo0#hhhhh ; then
+    exit 1
+fi
+
+if ./dplan agenda -d 10-10-2003 -u gigiooooooooooooooooooooo#hhhhh ; then
+    exit 1
+fi
+
+if ./dplan agenda -d 10-10-2003 -u gigi#hhhhhkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk ; then
+    exit 1
+fi
+
+if ./dplan agenda -k; then
+    exit 1
+fi
+
+if ./dplan agenda -r; then
+    exit 1
+fi
+
+if ./dplan -m 12-09-2008 agenda; then
+    exit 1
+fi
+
+if ./dplan -c gigimmmmmmmmmmmmmmmmmmmmmmmmmm ; then
+    exit 1
+fi
+
+
+exit 0

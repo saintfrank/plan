@@ -1,0 +1,29 @@
+dplan: ciccio: Created
+dplan: ciccio: Cannot create, agenda already present
+dplan: ciccio: Removed
+dplan: test1.dat: Agenda not empty, cannot remove
+dplan: test1.dat: 01-08-2008 cinzia#Pagare rata macchina
+dplan: test1.dat: No events registered
+dplan: test1.dat: 04-06-2008 davide#Scrivere a Nadia
+dplan: test1.dat: 04-06-2008 davide#Telefonare zia luigina (20:00)
+dplan: test1.dat: 01-06-2008 cinzia#Pagare rata macchina
+dplan: test1.dat: 04-06-2008 davide#Scrivere a Nadia
+dplan: test1.dat: 04-06-2008 davide#Telefonare zia luigina (20:00)
+dplan: test1.dat: No events registered
+dplan: maria: Success 
+dplan: luigi: Success 
+dplan: priscilla: Agenda not existent
+dplan: cinzia: Success 
+dplan: da: Success 
+dplan: test1.dat: Removed
+dplan: test1.dat: Created
+dplan: 12-12-2008: Success 
+dplan: 02-12-2008: Success 
+dplan: 12-12-2008: Success 
+dplan: 31-12-2008: Success 
+dplan: 04-12-2008: Success 
+dplan: test1.dat: 02-12-2008 maria#Parrucchiere (ore 14:00)
+dplan: test1.dat: 04-12-2008 fufi#miao miao miao
+dplan: test1.dat: 12-12-2008 gigi#Veterinario
+dplan: test1.dat: 12-12-2008 cinzia#Cena con Vito
+dplan: test1.dat: 31-12-2008 luigi#ecco___ un po' di strani^%! caratteri

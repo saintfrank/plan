@@ -1,0 +1,65 @@
+=========================================================================
+ISTRUZIONI e SPECIFICHE per il progetto finale di LCS 2006/07
+========================================================================
+
+Il per sostenere l'esame di LCS si devono realizzare tre frammenti. Questo kit
+contiene il materiale relativo al terzo frammento (progetto finale).
+
+Il progetto prevede l'implementazione di un semplice server che gestsce un
+pool di agende condivise fra diversi utenti.
+
+
+------------------------------------------------
+Estrarre il materiale dal file TAR
+------------------------------------------------
+Creare una directory temporanea, copiare il file tar
+nella directory e spostarsi nella directory appena creata. Es.
+
+$$ mkdir Frammento3
+$$ mv lcskit_f3DPLAN.tar.gz Frammento3
+$$ cd Frammento3
+
+S-tarare i file del kit
+
+$$ tar xzvf lcskit_f3DPLAN.tar.gz
+
+questa operazione crea una directory DPLAN/
+che a sua volta contiene quattro directory: 
+
+Doc/
+	che contiene la documentazione del progetto
+
+Src/
+	che contiene i file di include relativi alle funzioni da implementare e
+	gli script ed il materiale per il test del client e del server
+
+Test/
+	che contiene i test cunit per la libreria che realizza le varie
+	funzioni di creazione/distruzione manipolazione delle agende
+	(libdplan.a)
+Lib/
+	directory in cui risiede la libreria libdplan.a
+
+ed il file dplan0708.pdf che contiene le specifiche complessive del progetto.
+
+Leggere attentamente le specifiche e procedere prima allo sviluppo della
+libreria libdplan (vedi Src/README.libdplan) e poi del server e dei client (vedi
+Src/README.clientserver).
+
+
+----------------------------
+ VALUTAZIONE DEL PROGETTO
+----------------------------
+
+Gli studenti che consegnano una versione funzionante e ragionevolmente
+corretta del progetto entro la data di scadenza ottengono
+bonus di 2 punti che verra' sommato al voto finale (vedi lucidi lezioni ed
+esercitazioni).
+
+La qualita' del codice consegnato contribuira' alla votazione finale insime
+alla prova orale e al codice degli altri frammenti. Per i criteri di
+valutazione rimandiamo alla sezione specifica in dplan0708.pdf.
+
+Eventuali caratteristiche in piu' rispetto a quelle strettamente richieste
+dalle specifiche verranno valutate in questa sede.
+ 

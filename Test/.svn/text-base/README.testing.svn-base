@@ -1,0 +1,86 @@
+==== Perche' il testing =======
+Il testing, da non confondere con il debugging e' la fase in cui mettiamo
+sistematicamente sotto pressione il programma alla ricerca di bugs.
+
+In C andrebbero testate incrementalmente tutte le singole funzioni. Ci sono
+diversi framework che permettono di organizzare batterie di test di questo
+tipo, gestirle etc etc 
+
+Per maggiori informazioni vedi il cap testing del testo consigliato
+"Programmazione nella pratica"
+
+
+==== TOOL di TEST =======
+
+Ci sono molti tool per rendere piu' agevole/automatizzare il testing: vedi
+http://www.opensourcetesting.org/unit_c.php 
+
+Noi vedremo come si  effettua il testing unitario delle funzioni
+usando CUNIT
+http://cunit.sourceforge.net/
+
+==== CUNIT =======
+
+CUnit e' un framework per scrivere ed amministrare e girare i test 
+unitari sulle funzioni C. 
+
+CUnit e' una libreria statica linkata con il codice di test dell'utente.
+Il framework fornisce un grosso insieme di asserzioni che permettono di
+testare i data type piu' comunemente usati. Inoltre i test ed i report dei
+risultati possono essere fatti con un numero di interfacce diverse (noi
+useremo quello semplice testuale).
+
+CUnit e' organizzato in modo gerarchico. L'insieme di tutti test attivi
+(registry) e' organizzato
+in "suite", ciascuna delle quali e' composta da funzioni di test singole.
+
+                      Test Registry
+                            |
+             ------------------------------
+             |                            |
+          Suite '1'      . . . .       Suite 'N'
+             |                            |
+       ---------------             ---------------
+       |             |             |             |
+    Test '11' ... Test '1M'     Test 'N1' ... Test 'NM'
+
+Le suite tipicamente taggruppano test legati fra di loro e possono essere
+iniziate e terminate da opportune funzioni che preparano l'ambiente per la
+suite e che lo ripuliscono alla fine del test. Queste funzioni, una volta
+registrate, sono chiamate automaticamente dal framework prima di effettuare i
+test.
+
+Tutte le funzioni nel registry possono essere girate con uan singola chiamata
+di funzione.
+
+
+=== CUNIT: Come si usa  ===
+Tipicamente CUnit si usa attraverso i seguenti step:
+
+   1. Si scrivono delle funzioni di test, suddivise logicamente in suite
+   correlate (ed eventualmente delle funzioni per
+   effettuare l'inizializzazione ed il cleanup prima e dopo una suite di test)
+   2. Si inizializza l'insieme dei test - CU_initialize_registry()
+   3. Si aggiungono le suite scritte al registry  - CU_add_suite()
+   4. Si aggiungono ad ogni suite i test che le compongono - CU_add_test()
+   5. Si girano i test con l'interfaccia che preferiamo, 
+      e.g. CU_console_run_tests
+   6. Si ripulisce l'insieme di test - CU_cleanup_registry
+
+nel file cunit.c c'e' un esempio di test per fprintf e fread preso dal sito
+CUnit. 
+
+
+==== TEST non UNITARI =======
+
+I test che non si riconducono alla singola funzione possono essere organizzati
+e diretti in diversi modi. Nel corso abbiamo visto esempi in cui il Makefile
+viene usato per automatizzare il testing dei memory leak e
+per effettuare semplici controlli di consistenza sull'output delle sungole
+funzioni utilizzando l'utility diff.
+
+Inoltre puo' essere utili raccogliere test di invocazione in script in modo da
+poterli rieffettuare automaticamente ad ogni modifica.
+
+In rete si trovano numerosi test framework piu' sofisticati 
+per test non unitari.

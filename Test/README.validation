@@ -1,0 +1,43 @@
+======== MEMORY LEAK =============
+
+Si ha u nmemory leak quando memoria inutile e/o non piu' deallocabile riempie
+lo spazio dello heap. Tipicamente si verifica quando il puntatore alla memoria
+deallocata viene perso e/o non viene effettuata la free corrispondente.
+
+Il debugging sistematico del memory leak puo' essere effettuata usando
+l'utility mtrace (man mtrace). Per utilizzarla basta includere
+#include <mcheck.h>
+
+ed invocare mtrace() all'inizio del main. In questo modo tutte le allocazioni
+e deallocazioni vengono registrate in un file il cui nome e' specificato dalla
+variabile di ambiente  MALLOC_TRACE. Ad esempio si puo' settare
+
+bash$ export MALLOC_TRACE=mtrace.log
+
+dopodiche finita l'esecuzione si usa l'utility mtrace (passando il nome
+dell'eseguibile ed i lfile 
+di trace) per controllare l'esito, es:
+
+bash$ mtrace testD2n mtrace.log
+
+===== Prevenire e' meglio che curare: le assert =====
+
+Un'altra possibilita' e' inserire sistematicamente asserzioni all'interno del
+codice per controllare il verificarsi di condizioni, invarianti etc.
+
+In questo caso si puo; usare la funzione "assert()" (man 3 assert)
+
+
+===== Verificare un programma C : lint ==========
+Lint -- A C program verifier
+
+You will soon discover (if you have not already) that the C compiler is pretty vague in many aspects of checking program correctness, particularly in type checking. Careful use of prototyping of functions can assist modern C compilers in this task. However, There is still no guarantee that once you have successfully compiled your program that it will run correctly.
+
+The UNIX utility lint can assist in checking for a multitude of programming errors. Check out the online manual pages (man lint) for complete details of lint. It is well worth the effort as it can help save many hours debugging your C code.
+
+To run lint simply enter the command:
+
+    lint myprog.c.
+
+Lint is particularly good at checking type checking of variable and function assignments, efficiency, unused variables and function identifiers, unreachable code and possibly memory leaks. There are many useful options to help control lint (see man lint).
+

@@ -1,0 +1,546 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <pthread.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <errno.h>
+#include <sys/un.h>
+#include <unistd.h>
+#include "lcscom.c"
+#include "lbase.c"
+#include "llist.c"
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
+#define true 1
+#define DEBUG_COM
+#define DEBUG
+#define SOCKETNAME "dsock"
+#define LIBERA free (appoggio); free (new); free (agenda);
+#define MAXMESSAGEBUFFER 125
+#define PREFISSO_PATH ""
+
+void *personal_fun(void *fd);
+int name_to_agenda(char *nome, elem_t **agenda_ritorno );
+int name_to_store(char *nome, elem_t *agenda );
+int esegui(char azione, char* stringa,char** errore);
+int to_normal_string(char* ingresso, int lunghezza,char **new);
+
+int main(){
+	 
+	serverChannel_t server;
+	channel_t new_connection;
+	pthread_t new_thread;
+	
+	int err = 0;
+	
+	server = createServerChannel(SOCKETNAME);
+	
+	#ifdef DEBUG_COM
+	fprintf(stderr,"STEP createserver ha ritornato %d\n",server);
+	#endif
+	
+	if( server == -1) 
+		{
+		 perror("creazione :");	
+		 fprintf(stderr, "problemi con la creazione del server \n");
+		 return -1;
+		} 
+	 
+	 
+	while(true){	 
+	 
+		if((int)(new_connection = acceptConnection(server)) == -1)
+			{
+			fprintf(stderr, "problemi con la accept, newconnection %d \n", (int)new_connection);
+			return -1;
+			}
+			 
+		
+		#ifdef DEBUG_COM
+		fprintf(stderr,"SERVER - accept andata! \n");
+		#endif
+		
+		if( (err = pthread_create(&new_thread,NULL,&personal_fun,(channel_t *)&new_connection)) != 0 )
+									 {
+									 perror("pthread_create :")	;
+									 printf("SERVER -errore nella pthread_create !  err: %d \n",err);
+									 return -1;									 
+									 }
+									 
+		#ifdef DEBUG_COM
+		fprintf(stderr,"SERVER		pthread create andata ! !\n");
+		#endif												 
+		
+		}
+		
+		closeSocket(server);
+		#ifdef DEBUG_COM
+		fprintf(stderr,"SERVER	Ho chiuso il  server socket %d\n",(int)server);
+		#endif
+		
+		return 0;
+		
+}
+
+
+void *personal_fun(void *fd)
+ {
+    channel_t *canale = (channel_t *)fd;
+	message_t *richiesta=malloc(sizeof(message_t)+(125*sizeof(char)));
+	message_t *risposta=malloc(sizeof(message_t)+(125*sizeof(char)));	
+	
+	int ricevuti = 0;
+	int inviati = 0;
+	int esito;
+	char **errore=malloc(sizeof(char *));
+	char *stringa_convertita;       /* da usare con la funzione to_normal_string() */
+	
+	*errore=calloc(200,sizeof(char *));
+	
+	
+	#ifdef DEBUG
+	fprintf(stderr,"PERSONAL	inizio routine %d !!!\n", (int)*canale);
+	#endif		
+
+						
+		if( (ricevuti = receiveMessage(*canale, richiesta)) <= 0 )
+			{
+			perror("ricezione");	
+			fprintf(stderr, "problemi con la ricezione \n");
+			exit( -1 );
+			} 
+		
+		
+		
+		#ifdef DEBUG
+		if(richiesta->length > 0)
+				{
+				stringa_convertita=calloc(richiesta->length,sizeof(char));
+				to_normal_string(richiesta->buffer,richiesta->length,&stringa_convertita);			
+				fprintf(stderr,"PERSONAL - ho ticevuto  %s !!!\n", stringa_convertita);
+				}
+		#endif		
+			
+		/* effettuo tutte le operazioni */	
+		
+		esito = esegui(richiesta->type, richiesta->buffer, errore );
+			
+		
+		#ifdef DEBUG
+		fprintf(stderr,"PERSONAL - l'esito è stato %d - errore (a capo):\n %s \n", esito,*errore);
+		#endif		
+		
+		risposta->type=(esito==0)?MSG_OK:MSG_ERROR;
+		risposta->length=0;  /* TODO temporanea */
+		risposta->buffer=richiesta->buffer;
+			
+		if( (inviati = sendMessage(*canale, risposta)) <= 0 )
+			{
+			perror("invio");	
+			fprintf(stderr, "problemi con l'invio della risposta \n");
+			exit(-1);
+			} 
+
+	
+	free(richiesta);
+	free(risposta);
+	free(stringa_convertita);
+    closeSocket(*canale) ;
+	#ifdef DEBUG
+	fprintf(stderr,"PERSONAL	Ho chiuso il socket %d\n",(int)*canale);
+	#endif
+	
+	exit(0);
+   
+}
+
+int esegui(char azione, char* stringa,char** errore){
+	
+	
+	/* variabili utili all'interno dei case */
+	int risultato;
+	FILE *file;
+	char *nome_agenda=calloc(MAXMESSAGEBUFFER,sizeof(char));
+	char *data=malloc(MAXMESSAGEBUFFER*sizeof(char));
+	char *pattern=malloc(MAXMESSAGEBUFFER*sizeof(char));
+	char *appoggio=malloc(MAXMESSAGEBUFFER*sizeof(char));   /* variabile d'appoggio'*/
+	
+	evento_t *new= malloc(sizeof(evento_t));
+	
+	elem_t **agenda=malloc(sizeof(elem_t *));
+	elem_t **lista_ritornata=malloc(sizeof(elem_t *));
+	
+	#ifdef DEBUG
+	fprintf(stderr,"ESEGUI	Inizio - I parametri passati sono %c - %s \n",azione, stringa);
+	#endif
+	
+	if(stringa == NULL)
+		return -1;
+	
+	switch (azione)
+		{
+			case MSG_MKAGENDA:
+						
+				if( strcpy(nome_agenda,stringa) == NULL)
+							{	
+							sprintf(*errore,"CHECK! !\n");
+								
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, agenda non trovata ! !\n");
+							#endif
+							LIBERA	
+							return -1;
+							}
+							
+				#ifdef DEBUG
+				sprintf(*errore,"ESEGUI	strcpy ok  ! !\n");
+				#endif			
+										
+				sprintf(nome_agenda,"%s%s",PREFISSO_PATH,nome_agenda);	
+					
+				if ((file = fopen(nome_agenda, "w+"))==NULL)
+							   {
+								sprintf(*errore,"ESEGUI  Percorso sbagliato : %s",nome_agenda);
+								LIBERA
+								return -1;
+								}
+								
+				#ifdef DEBUG
+				sprintf(*errore,"ESEGUI	fopen ok  ! !\n");
+				#endif
+								
+				fclose(file);
+				LIBERA
+				return 0;
+			
+						
+			case MSG_RMAGENDA:
+			
+				if( strcpy(nome_agenda,stringa) == NULL)
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, agenda è null ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}						
+							
+				sprintf(nome_agenda,"%s%s",PREFISSO_PATH,nome_agenda);	
+											
+				if (remove(nome_agenda)!= 0)
+							   {
+								perror("ESEGUI	Percorso sbagliato nella remove :");
+								sprintf(*errore,"ESEGUI	Percorso sbagliato : %s",nome_agenda);
+								LIBERA	
+								return -1;
+								}
+								
+				LIBERA	
+				return 0;
+						
+						
+			case MSG_INSERT:	
+					
+				
+				if(strcpy(nome_agenda,stringa) == NULL)
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, agenda non trovata ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}
+					
+				if( strcpy( new->data, (stringa+= (strlen(stringa)+1) ) ) == NULL)
+						{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, data non riconosciuta ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}
+					
+				if( strcpy(new->utente,(stringa+=(strlen(stringa)+1))) == NULL)
+						{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, utente non riconosciuto ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}
+							
+				if( strcpy(new->descrizione,(stringa+=(strlen(stringa)+1)))  == NULL)
+						{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, descrizione non riconosciuta ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}		
+					
+				sprintf(nome_agenda,"%s%s",PREFISSO_PATH,nome_agenda);	
+									
+				if(name_to_agenda(nome_agenda,agenda) == -1)
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	l'apertura dell'agenda dal path -%s- ha fallito'' ! !\n",nome_agenda);
+							#endif	
+							LIBERA	
+							return -1;
+							}	
+					
+					if( (-add(agenda, new)) == -1)	/* nego il risultato per consistenza, add ritorna 1 in caso di errore, io voglio ritornare -1*/
+							{ 
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	problemi con la add' ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}   
+										
+					if( name_to_store(nome_agenda,*agenda) == -1 )
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	problemi con la scrittura dell'agenda aggiornata nel file' ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}
+					
+					LIBERA
+					return 0;
+				
+				
+			case MSG_RMPATTERN:
+				
+					if(strcpy(nome_agenda,stringa) == NULL)
+						{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, agenda non trovata ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}
+					
+					if( strcpy( pattern ,( stringa += ( strlen(stringa)+1) ) )  == NULL)
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	stringa non valida, pattern non trovata ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}
+							
+				if(name_to_agenda(nome_agenda,agenda) == -1)
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	l'apertura dell'agenda ha fallito'' ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}			
+						
+				*lista_ritornata = rimuovi(pattern, *agenda);
+				
+				if( name_to_store(nome_agenda,*lista_ritornata) == -1 )
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	problemi con la scrittura dell'agenda aggiornata nel file' ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}	
+				
+				LIBERA	
+				return 0;
+			
+			
+			case (MSG_EMESE ||MSG_EGIORNO):
+						
+				
+				if( strcpy(nome_agenda,stringa) == NULL)
+					{	
+						#ifdef DEBUG
+						sprintf(*errore,"ESEGUI	stringa non valida, on trovata ! !\n");
+						#endif	
+						LIBERA	
+						return -1;
+						}
+				
+				if( strcpy( data , ( stringa += ( strlen(stringa)+1) ) ) == NULL)
+						{	
+						#ifdef DEBUG
+						sprintf(*errore,"ESEGUI	stringa non valida, mese non tronvato!!! \n");
+						#endif	
+						LIBERA	
+						return -1;
+						}
+						
+				if(name_to_agenda(nome_agenda,agenda) == -1)
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	l'apertura dell'agenda ha fallito'' ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}			
+						
+				if((risultato = cerca(data, *agenda, lista_ritornata)) == -1 )
+						   {	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	la funzione cerca ha fallito \n");
+							#endif	
+							LIBERA	
+							return -1;
+							}else{
+								  #ifdef DEBUG
+								  sprintf(*errore,"ESEGUI	trovati da cerca %d elementi \n",risultato);
+								  #endif								
+								}
+				
+				
+				if( storeAgenda(stdout,*lista_ritornata) == -1 )
+							{	
+							#ifdef DEBUG
+							sprintf(*errore,"ESEGUI	problemi con la scrittura su output dei risultati ! !\n");
+							#endif	
+							LIBERA	
+							return -1;
+							}	
+								
+							
+				LIBERA	
+				return 0;
+			
+			case '?':
+				{
+				 #ifdef DEBUG
+				 sprintf(*errore,"ESEGUI	carattere non riconosciuto \n");
+				 #endif								
+				}
+				LIBERA	
+				return 1;
+		
+			default:
+				LIBERA	
+				abort ();
+					
+			}
+			
+	
+	
+}
+
+
+
+/* restituisce l'agenda caricata dal File corrispondente alla stringa path
+ * 
+ * 
+ * @param 		path è il path del file, agenda_ritorno è il puntatore a puntatore usato per ritornare indirettamente l'agenda caricata
+ * @modifies	agenda_ritorno punterà all'agenda caricata in caso di successo'
+ * @return		0 zero in caso di successo, -1 in caso di errore 
+ */
+
+int name_to_agenda(char *nome, elem_t **agenda_ritorno ){
+	
+	FILE *file;
+	int risultato;
+	
+	if(nome==NULL)
+		{
+		#ifdef DEBUG
+		fprintf(stderr,"Percorso è NULL : %s",nome);
+		#endif
+		return -1;
+	    }
+	
+	if ((file = fopen(nome, "r"))==NULL)
+	               {
+					#ifdef DEBUG
+					fprintf(stderr,"Percorso sbagliato : %s",nome);
+			        #endif
+					return -1;
+	    	        }
+	
+	risultato = loadAgenda(file, agenda_ritorno);
+	/* TODO vedere se agenda deve essere inizializzata */
+		
+	fclose(file);	
+		
+	return risultato;
+	
+	}
+	
+	
+/* scrive agenda nel file contrassegnato da path
+ * 
+ * 
+ * @param 		path è il path del file, agenda è il puntatore all'agenda da salvare, se esiste, viene sovraiscritta
+ * 
+ * @return		0 zero in caso di successo, -1 in caso di errore 
+ */
+int name_to_store(char *nome, elem_t *agenda ){
+	
+	FILE *file;
+	int risultato;
+	
+	if(nome==NULL)
+		{
+		#ifdef DEBUG
+		fprintf(stderr,"Percorso è NULL : %s",nome);
+		#endif
+		return -1;
+	    }
+	
+	if ((file = fopen(nome, "w+"))==NULL)
+	               {
+					#ifdef DEBUG
+					fprintf(stderr,"Percorso sbagliato : %s",nome);
+			        #endif
+					return -1;
+	    	        }
+	
+	risultato = storeAgenda(file, agenda);
+	/* TODO vedere se agenda deve essere inizializzata */
+		
+	fclose(file);	
+		
+	return risultato;
+	
+	}
+	
+/* piccola funzione per le stampe di debug, oltre a convertire la stringa CONTA il numero di tokens separati da \0
+ * 
+ * @param  		ingresso è una stringa della forma ccccc\0yyyy\0fffff\0, lunghezza è il numero dai caratteri significativi
+ * @modifies 	new: punterà a una stringa formata dalla stringa ingresso privata dei \0, quindi cccccyyyyyfffff
+ * @return 		il numero di tokens trovati
+ */
+	
+int to_normal_string(char* ingresso, int lunghezza,char **new){
+		int app=lunghezza;
+		
+		int tokens=1; /*  a questa funzione faccio anceh calcolare quanti tokens ci sono*/			
+		
+		if(ingresso == NULL || *new==NULL || (lunghezza == 0))
+			return 0;
+			
+		app -= strlen(ingresso);
+		strcpy(*new,ingresso);	
+		
+		do{
+						
+			sprintf(*new,"%s%s",*new,( ingresso += ( strlen(ingresso)+1) ) );
+			app -= strlen(ingresso);
+						
+			tokens++;
+			
+			}while(app>0 && (strlen(ingresso)>0) && (ingresso != NULL));
+		
+		return tokens;
+		
+		}
+	
+

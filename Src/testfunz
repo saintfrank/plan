@@ -1,0 +1,32 @@
+#!/bin/sh
+
+#test creazione
+./dplan -c ciccio
+./dplan -c ciccio
+./dplan -q ciccio
+./dplan -q test1.dat
+
+#test lettura eventi giornalieri e mensili
+./dplan test1.dat -g 01-08-2008
+./dplan test1.dat -g 02-08-2008
+./dplan test1.dat -g 04-06-2008
+./dplan test1.dat -m 06-2008
+./dplan test1.dat -m 11-2008
+
+#test rimozione pattern / distruzioni / creazioni
+./dplan test1.dat -r maria
+./dplan test1.dat -r luigi
+./dplan priscilla -r luigi
+./dplan test1.dat -r cinzia
+./dplan test1.dat -r da
+./dplan test1.dat -q 
+./dplan test1.dat -c 
+
+# test inserzioni e rimozioni
+./dplan test1.dat -d 12-12-2008 -u gigi#Veterinario
+./dplan test1.dat -d 02-12-2008 -u "maria#Parrucchiere (ore 14:00)"
+./dplan test1.dat -d 12-12-2008 -u "cinzia#Cena con Vito"
+./dplan test1.dat -d 31-12-2008 -u "luigi#ecco___ un po' di strani^%$@! caratteri"
+./dplan test1.dat -d 04-12-2008 -u "fufi#miao miao miao"
+./dplan test1.dat -m 12-2008
+exit 0

@@ -1,0 +1,135 @@
+#!/bin/sh
+
+echo "Inizio test parallelo"
+
+SOCK=./tmp/dsock
+OUT=./OUT
+
+echo "Test lettura eventi giornalieri e mensili (-g -m)"
+#test lettura eventi giornalieri e mensili
+./dplan test1.dat -g 01-08-2008 >${OUT}/out_1 &
+./dplan test1.dat -g 02-08-2008 >${OUT}/out_2 &
+./dplan test1.dat -g 04-06-2008 >${OUT}/out_3 &
+./dplan test1.dat -m 06-2008 >${OUT}/out_4 &
+./dplan test1.dat -m 11-2008 >${OUT}/out_5 &
+./dplan test2.dat -m 08-2008 >${OUT}/out_6 &
+wait
+
+#controlliamo le risposte
+for ((i=1;i<=6;i++)); do
+    if ! diff ${OUT}/out_$i ${OUT}/out_$i.check; then
+	echo Test failed: diff ${OUT}/out_$i ${OUT}/out_$i.check
+	exit 1
+    fi
+done
+
+echo "Test rimozioni (-r)"
+#test rimozione pattern 
+./dplan test2.dat -r maria &
+./dplan test2.dat -r luigi &
+./dplan priscilla -r luigi &
+./dplan test2.dat -r cinzia &
+./dplan test2.dat -r da &
+wait
+if ! ./dplan test2.dat -q ; then
+    echo Pippo
+fi
+wait 
+
+echo "Test inserzioni (-d -u)"
+# test inserzioni
+./dplan test1.dat -d 11-12-2008 -u gigi#Veterinario &
+./dplan test1.dat -d 02-12-2008 -u "maria#Parrucchiere (ore 14:00)" &
+./dplan test1.dat -d 12-12-2008 -u "cinzia#Cena con Vito" &
+./dplan test1.dat -d 31-12-2008 -u "luigi#ecco___ un po' di strani^%$@! caratteri" &
+./dplan test1.dat -d 04-12-2008 -u "fufi#miao miao miao" &
+wait
+
+#test lettura eventi giornalieri e mensili
+./dplan test1.dat -g 01-08-2008 >${OUT}/out_a1 &
+./dplan test1.dat -g 02-08-2008 >${OUT}/out_a2 &
+./dplan test1.dat -g 04-06-2008 >${OUT}/out_a3 &
+./dplan test1.dat -m 06-2008 >${OUT}/out_a4 &
+./dplan test1.dat -m 11-2008 >${OUT}/out_a5 &
+./dplan test2.dat -m 08-2008 >${OUT}/out_a6 &
+./dplan test1.dat -m 12-2008 >${OUT}/out_a7 &
+wait
+
+#controlliamo le risposte
+for ((i=1;i<=5;i++)); do
+    if ! diff ${OUT}/out_a$i ${OUT}/out_$i.check; then
+	echo Test failed: diff ${OUT}/out_a$i ${OUT}/out_$i.check
+	exit 1
+    fi
+done
+
+for ((i=6;i<=7;i++)); do
+    if ! diff ${OUT}/out_a$i ${OUT}/out_a$i.check; then
+	echo Test failed: diff ${OUT}/out_a$i ${OUT}/out_a$i.check
+	exit 1
+    fi
+done
+
+echo "Test creazioni (-c)"
+#test creazione
+for ((i=1;i<=9;i++)); do
+    ./dplan -c ciccio$i >${OUT}/out_b$i &
+done
+./dplan -q ciccio  >${OUT}/out_bf &
+wait
+
+if ! killall -PIPE dserver; then
+    echo Errore: SIGPIPE non gestito
+    exit 1
+fi
+wait
+
+for ((i=1;i<=9;i++)); do
+    if ! diff ${OUT}/out_b$i ${OUT}/out_b$i.check; then
+	echo Test failed: diff ${OUT}/out_b$i ${OUT}/out_b$i.check
+	exit 1
+    fi
+done
+if ! diff ${OUT}/out_bf ${OUT}/out_bf.check; then
+    echo Test failed: diff ${OUT}/out_bf ${OUT}/out_bf.check
+    exit 1
+fi
+
+echo "Test gestione segnali e cleanup"
+if  ! killall -w -TERM dserver; then
+    echo Errore: SIGTERM non gestito
+    exit 1
+fi
+
+
+# controllo rimozione socket
+if [ -f $SOCK ] ; then
+    echo Errore: $SOCK non rimosso
+    exit 1
+fi
+
+# controllo directory
+if rmdir tmp2; then
+    echo Errore: tmp2 vuota
+    exit 1
+fi
+
+if ! [ -f ./tmp2/test1.dat ] ; then
+    echo Errore: tmp2/test1.dat non presente
+    exit 1
+fi
+
+if [ -f ./tmp2/test2.dat ] ; then
+    echo Errore: tmp2/test2.dat era stata rimossa
+    exit 1
+fi
+
+for ((i=1;i<=9;i++)); do
+    if ! [ -f ./tmp2/ciccio$i ] ; then
+    echo Errore: tmp2/ciccio$i non presente
+    exit 1
+fi
+done
+
+exit 0
+
